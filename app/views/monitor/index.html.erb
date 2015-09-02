@@ -242,14 +242,17 @@
 });
 
     function showCpuHistory(){ 
-        var cpuHistoryData = '<% refreshData() %>';
+        var cpuHistoryData = '<%= refreshData() %>'.toString();
+        cpuHistoryData = cpuHistoryData.replace("&quot;","\"");
+        cpuHistoryData = cpuHistoryData.replace("&gt;","\"");
+        console.log(eval(cpuHistoryData));
         var startPointX = cpuHistoryData[0]["timestamp_local"] / 1000;
         var historyData = [];
         var i =0 ;
         for (i=0; i < cpuHistoryData.length; i++){ 
              historyData.push(cpuHistoryData[i]["cpu"]);
         }
-        alert(cpuHistoryData);
+        //alert(cpuHistoryData);
         $.artwl_bind({ showbtnid: "showCpuHistoryBtn", title: "CPU history", content: $("#cpu_history_container") });
         new Highcharts.Chart({
         chart: {

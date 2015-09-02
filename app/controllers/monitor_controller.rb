@@ -6,12 +6,9 @@ class MonitorController < ApplicationController
 
   def index
     @url = @@getdata_url
-    @cpu_history_data = refreshData
   end
   
-  def refreshData
-    return MonitorData::CPU_HISTORY_DATA
-  end
+
   
 
 end
