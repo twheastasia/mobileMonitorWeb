@@ -1,0 +1,333 @@
+<script type="text/javascript" charset="utf-8">
+  var flag = true;
+  function toggleStartStop(){
+	  flag = !flag;
+	  if(flag){
+              $("button#startStopBtn").text("stop");
+	  }else{
+	      $("button#startStopBtn").text("start");
+	  }
+  }
+
+  $(function () {
+    new Highcharts.Chart({
+    //$('div#cpu_container').highcharts({
+        chart: {
+            renderTo: 'cpu_container',
+            //alignTicks: false,
+            type: 'spline',
+            animation: Highcharts.svg, // don't animate in old IE
+            marginRight: 10,
+            events: {
+                load: function () {
+
+                    // set up the updating of the chart each second
+		            var series = this.series[0];
+			    setInterval(function () {
+				if(flag){
+		                      $.get('<%= @url %>', function(data){
+                	              var date = new Date();
+                                      var second = date.getTime() - date.getTimezoneOffset()*60000 ; // current time
+                                      var x = second;
+			              var y = parseInt(data["cpu"]);
+                                      //var y = data;
+                                      //console.log(typeof(y));
+			              $("p#cpu").text("x: " + x + " y: "+y);
+				      series.addPoint([x, y], true, true);
+				      });
+				 }
+                            }, 1000);
+                }
+            }
+        },
+        title: {
+                text: 'CPU'
+            },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 15
+            },
+            yAxis: {
+                title: {
+                    text: 'Percentage'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.series.name + '</b><br/>' +
+                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                        Highcharts.numberFormat(this.y, 2);
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            exporting: {
+                enabled: true
+            },
+            series: [{
+                name: 'Random data',
+                data: (function () {
+                    // generate an array of random data
+                    var data = [],
+                        time = (new Date()).getTime() - (new Date()).getTimezoneOffset()*60000,
+                        i;
+
+                    for (i = -19; i <= 0; i += 1) {
+                        data.push({
+                            x: time + i * 1000,
+                            y: Math.random()
+                        });
+                    }
+                    return data;
+                }())
+        }]
+    });
+    new Highcharts.Chart({
+        chart: {
+            renderTo: 'memory_container',
+            //alignTicks: false,
+            type: 'spline',
+            animation: Highcharts.svg, // don't animate in old IE
+            marginRight: 10,
+            events: {
+                load: function () {
+
+                    // set up the updating of the chart each second
+                    var series = this.series[0];
+                    setInterval(function () {
+			 if(flag){
+			      $.get("<%= @url %>", function(data){
+                              var date = new Date();
+                              var second = date.getTime() - date.getTimezoneOffset()*60000 ; // current time
+                              var x = second;
+                              var y = parseInt(data["memory"]);
+                              $("p#memory").text("x: "+x + "   y: "+y);
+                              series.addPoint([x, y], true, true);
+			      });
+			  }
+                    }, 1000);
+                }
+            }
+        },
+        title: {
+                text: 'MEMORY(PSS)'
+            },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 15
+            },
+            yAxis: {
+                title: {
+                    text: 'KB'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.series.name + '</b><br/>' +
+                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                        Highcharts.numberFormat(this.y, 2);
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            exporting: {
+                enabled: true
+            },
+            series: [{
+                name: 'Random data',
+                data: (function () {
+                    // generate an array of random data
+                    var data = [],
+                        time = (new Date()).getTime() - (new Date()).getTimezoneOffset()*60000,
+                        i;
+
+                    for (i = -19; i <= 0; i += 1) {
+                        data.push({
+                            x: time + i * 1000,
+                            y: Math.random()
+                        });
+                    }
+                    return data;
+                }())
+        }]
+    });
+    new Highcharts.Chart({
+        chart: {
+            renderTo: 'flow_container',
+            //alignTicks: false,
+            type: 'spline',
+            animation: Highcharts.svg, // don't animate in old IE
+            marginRight: 10,
+            events: {
+                load: function () {
+
+                    // set up the updating of the chart each second
+                    var series = this.series[0];
+                    setInterval(function () {
+			if(flag){    
+			    $.get("<%= @url %> ", function(data){
+                              var date = new Date();
+                              var second = date.getTime() - date.getTimezoneOffset()*60000 ;// current time
+                              var x = second;
+                              var y = parseInt(data["flow"]);
+                              $("p#flow").text("x: "+x + "   y: "+y);
+                              series.addPoint([x, y], true, true);
+			      });
+			}
+                    }, 1000);
+                }
+            }
+        },
+        title: {
+                text: 'NetWork Speed (download)'
+            },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 15
+            },
+            yAxis: {
+                title: {
+                    text: 'KB/S'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.series.name + '</b><br/>' +
+                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                        Highcharts.numberFormat(this.y, 2);
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            exporting: {
+                enabled: true
+            },
+            series: [{
+                name: 'Random data',
+                data: (function () {
+                    // generate an array of random data
+                    var data = [],
+                        time = (new Date()).getTime() - (new Date()).getTimezoneOffset()*60000,
+                        i;
+
+                    for (i = -19; i <= 0; i += 1) {
+                        data.push({
+                            x: time + i * 1000,
+                            y: Math.random()
+                        });
+                    }
+                    return data;
+                }())
+        }]
+    });
+
+});
+
+    function showCpuHistory(){ 
+        var cpuHistoryData = '<% refreshData() %>';
+        var startPointX = cpuHistoryData[0]["timestamp_local"] / 1000;
+        var historyData = [];
+        var i =0 ;
+        for (i=0; i < cpuHistoryData.length; i++){ 
+             historyData.push(cpuHistoryData[i]["cpu"]);
+        }
+        alert(cpuHistoryData);
+        $.artwl_bind({ showbtnid: "showCpuHistoryBtn", title: "CPU history", content: $("#cpu_history_container") });
+        new Highcharts.Chart({
+        chart: {
+            renderTo: 'cpu_history_container',
+            type: 'area'
+        },
+        title: {
+            text: 'CPU History'
+        },
+        subtitle: {
+            text: ''
+        },
+        xAxis: {
+            labels: {
+                formatter: function() {
+                    return this.value; // clean, unformatted number for year
+                }
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Nuclear weapon states'
+            },
+            labels: {
+                formatter: function() {
+                    return this.value / 1000 +'k';
+                }
+            }
+        },
+        tooltip: {
+            pointFormat: '{series.name} produced <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+        },
+        plotOptions: {
+            area: {
+                pointStart: startPointX,
+                marker: {
+                    enabled: false,
+                    symbol: 'circle',
+                    radius: 2,
+                    states: {
+                        hover: {
+                            enabled: true
+                        }
+                    }
+                }
+            }
+        },
+        series: [{
+    
+            name: 'Mi',
+            data: historyData
+        }]
+    });
+        $("#cpu_history_container").show();
+    }
+</script>
+
+<h1>Mobile Monitor WebSite</h1>
+<p></p>
+<input list="phones" />
+<datalist id="phones">
+    <option value="Mi">
+    <option value="Honor">
+    <option value="Meizu">
+</datalist>
+<button type="button" id="showCpuHistoryBtn" onclick="showCpuHistory()">Show history data of CPU </button>
+<button type="button" id="showMemoryHistoryBtn">Show history data of Memory </button>
+<button type="button" id="showFlowHistoryBtn">Show history data of NetWork Speed </button>
+<br>
+<br>
+<button type="button" id="startStopBtn" onclick="toggleStartStop()">stop</button>
+
+<div id="cpu_container" style="width: 1500px; height: 200px"></div>
+<p id="cpu"></P>
+<div id="cpu_history_container" style="width: 1500px; height: 200px" display="none"></div>
+<div id="memory_container" style="width: 1500px; height: 200px"></div>
+<p id="memory"></P>
+<div id="flow_container" style="width: 1500px; height: 200px"></div>
+<p id="flow"></P>
+
+
