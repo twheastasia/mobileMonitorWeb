@@ -2,4 +2,5 @@ module MonitorData
   CPU_HISTORY_DATA = []
   MEMORY_HISTORY_DATA = []
   NETWORKSPEED_HISTORY_DATA = []
+  DATA = []
 end

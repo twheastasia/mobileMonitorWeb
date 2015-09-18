@@ -4,7 +4,7 @@ module ApplicationHelper
 
 	def refreshData
 
-      return MonitorData::CPU_HISTORY_DATA.to_json
+      return MonitorData::DATA.to_json
     end
 
 end
