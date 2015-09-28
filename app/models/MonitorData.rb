@@ -3,4 +3,5 @@ module MonitorData
   MEMORY_HISTORY_DATA = []
   NETWORKSPEED_HISTORY_DATA = []
   DATA = []
+  PHONE_DATA = {}
 end

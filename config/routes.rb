@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   post 'processor/collectdata'
   get 'processor/getdata'
   get 'monitor/index'
-
+  get 'processor/refreshDevices'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

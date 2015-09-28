@@ -1,5 +1,7 @@
 <script type="text/javascript" charset="utf-8">
   var flag = true;
+  var selectDiviceId = "";
+
   function toggleStartStop(){
 	  flag = !flag;
 	  if(flag){
@@ -316,19 +318,47 @@
     });
         $("#cpu_history_container").show();
     }
+
+    function refreshDevicesList(){ 
+        $.ajax({
+            type: "GET",
+            url: "http://192.168.199.180:3001/processor/refreshDevices",
+            contentType: "application/json",
+            dataType: "JSON",
+            success: function(data){
+                var objSelectNow = document.getElementById("phones");
+                
+                objSelectNow.options.length = 0;
+                for(var key in data){
+                    var objOption = document.createElement("option");
+                    objOption.value = key;
+                    objOption.text = data[key];
+                    objSelectNow.options.add(objOption);
+                }
+
+            },
+            complete: function(){}
+        });
+
+
+
+
+    }
+
+    function onSelectItemChanged(){ 
+        var objSelectNow = document.getElementById("phones");
+        selectDiviceId = objSelectNow.options[objSelectNow.selectedIndex].value;
+    }
+
 </script>
 
 <h1>Mobile Monitor WebSite</h1>
 <p></p>
-<input list="phones" />
-<datalist id="phones">
-    <option value="Mi">
-    <option value="Honor">
-    <option value="Meizu">
-</datalist>
+<select id="phones" onchange="onSelectItemChanged()"></select>
 <button type="button" id="showCpuHistoryBtn" onclick="showCpuHistory()">Show history data of CPU </button>
 <button type="button" id="showMemoryHistoryBtn">Show history data of Memory </button>
 <button type="button" id="showFlowHistoryBtn">Show history data of NetWork Speed </button>
+<button type="button" id="refreshDevices" onclick="refreshDevicesList()">refresh devices list</button>
 <br>
 <br>
 <button type="button" id="startStopBtn" onclick="toggleStartStop()">stop</button>
