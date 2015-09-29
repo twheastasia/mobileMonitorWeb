@@ -15,7 +15,7 @@ class ProcessorController < ApplicationController
   end
 
   def getdataByDeviceId
-    render :json => MonitorData::PHONE_DATA[params["device_id"]]
+    render :json => (MonitorData::PHONE_DATA[params["device_id"]].to_a).last
   end
  
   def collectdata
