@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   get 'monitor/index'
   get 'processor/refreshDevices'
   get 'processor/getdataByDeviceId'
+  get 'processor/getHistoryData'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
