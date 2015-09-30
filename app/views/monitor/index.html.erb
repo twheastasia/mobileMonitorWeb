@@ -89,7 +89,7 @@
                     for (i = -19; i <= 0; i += 1) {
                         data.push({
                             x: time + i * 1000,
-                            y: Math.random()
+                            y: 0
                         });
                     }
                     return data;
@@ -164,7 +164,7 @@
                     for (i = -19; i <= 0; i += 1) {
                         data.push({
                             x: time + i * 1000,
-                            y: Math.random()
+                            y: 0
                         });
                     }
                     return data;
@@ -239,7 +239,7 @@
                     for (i = -19; i <= 0; i += 1) {
                         data.push({
                             x: time + i * 1000,
-                            y: Math.random()
+                            y: 0
                         });
                     }
                     return data;
@@ -339,7 +339,9 @@
                 }
                 onSelectItemChanged();
             },
-            complete: function(){}
+            complete: function(){
+
+            }
         });
 
 
@@ -350,6 +352,7 @@
     function onSelectItemChanged(){ 
         var objSelectNow = document.getElementById("phones");
         selectDiviceId = objSelectNow.options[objSelectNow.selectedIndex].value;
+        showCharts();
     }
 
 </script>
