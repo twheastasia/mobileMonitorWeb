@@ -1,7 +1,8 @@
 class MonitorController < ApplicationController
   require 'MonitorData'
   
-  @@base_url = "http://192.168.199.180:3001/"
+  #@@base_url = "http://192.168.199.180:3001/"
+  @@base_url = "http://192.168.1.8:3001/"
   #@@getdata_url = @@base_url + "processor/getdata"
   #@@getdataByDeviceId_url = @@base_url + "processor/getdataByDeviceId"
   #@@getHistoryData_url = @@base_url + "processor/getHistoryData"

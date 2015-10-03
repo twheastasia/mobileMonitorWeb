@@ -5,7 +5,7 @@
   function toggleStartStop(){
 	  flag = !flag;
 	  if(flag){
-              $("button#startStopBtn").text("stop");
+          $("button#startStopBtn").text("stop");
 	  }else{
 	      $("button#startStopBtn").text("start");
 	  }
@@ -15,241 +15,99 @@
       showCharts();
   });
 
+  function createHighCharts(filter_by_what, container_id, title_text, title_yAxis_text, series_name){
+    new Highcharts.Chart({
+
+            chart: {
+                renderTo: container_id,
+                //alignTicks: false,
+                type: 'spline',
+                animation: Highcharts.svg, // don't animate in old IE
+                marginRight: 10,
+                events: {
+                    load: function () {
+
+                        // set up the updating of the chart each second
+                        var series = this.series[0];
+                        // refreshDevices();
+                            setInterval(function () {
+                            if(flag){
+                                  $.get('<%= @getdataByDeviceId_url %>'+ '?device_id='+ selectDiviceId, function(data){
+                                          var date = new Date();
+                                          var second = date.getTime() - date.getTimezoneOffset()*60000 ; // current time
+                                          var x = second;
+                                          var y = parseInt(data[filter_by_what]);
+                                          //var y = data;
+                                          //console.log(typeof(y));
+                                          //$("p#cpu").text("x: " + x + " y: "+y);
+                                          series.addPoint([x, y], true, true);
+                                          });
+                                     }
+                                }, 1000);
+                    }
+                }
+            },
+            title: {
+                text: title_text
+            },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 15
+            },
+            yAxis: {
+                title: {
+                    text: title_yAxis_text
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.series.name + '</b><br/>' +
+                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                        Highcharts.numberFormat(this.y, 2);
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            exporting: {
+                enabled: true
+            },
+            series: [{
+                name: series_name,
+                data: (function () {
+                    // generate an array of random data
+                    var data = [],
+                        time = (new Date()).getTime() - (new Date()).getTimezoneOffset()*60000,
+                        i;
+
+                    for (i = -19; i <= 0; i += 1) {
+                        data.push({
+                            x: time + i * 1000,
+                            y: 0
+                        });
+                    }
+                    return data;
+                }())
+        }]
+    });
+
+
+  }
+
 
   function showCharts(){
-    new Highcharts.Chart({
-    //$('div#cpu_container').highcharts({
-        chart: {
-            renderTo: 'cpu_container',
-            //alignTicks: false,
-            type: 'spline',
-            animation: Highcharts.svg, // don't animate in old IE
-            marginRight: 10,
-            events: {
-                load: function () {
-
-                    // set up the updating of the chart each second
-		            var series = this.series[0];
-                    // refreshDevices();
-        			    setInterval(function () {
-        				if(flag){
-		                      $.get('<%= @getdataByDeviceId_url %>'+ '?device_id='+ selectDiviceId, function(data){
-                	                  var date = new Date();
-                                      var second = date.getTime() - date.getTimezoneOffset()*60000 ; // current time
-                                      var x = second;
-			                          var y = parseInt(data["cpu"]);
-                                      //var y = data;
-                                      //console.log(typeof(y));
-			                          $("p#cpu").text("x: " + x + " y: "+y);
-				                      series.addPoint([x, y], true, true);
-				      });
-				 }
-                            }, 1000);
-                }
-            }
-        },
-        title: {
-                text: 'CPU'
-            },
-            xAxis: {
-                type: 'datetime',
-                tickPixelInterval: 15
-            },
-            yAxis: {
-                title: {
-                    text: 'Percentage'
-                },
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#808080'
-                }]
-            },
-            tooltip: {
-                formatter: function () {
-                    return '<b>' + this.series.name + '</b><br/>' +
-                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
-                        Highcharts.numberFormat(this.y, 2);
-                }
-            },
-            legend: {
-                enabled: false
-            },
-            exporting: {
-                enabled: true
-            },
-            series: [{
-                name: 'cpu',
-                data: (function () {
-                    // generate an array of random data
-                    var data = [],
-                        time = (new Date()).getTime() - (new Date()).getTimezoneOffset()*60000,
-                        i;
-
-                    for (i = -19; i <= 0; i += 1) {
-                        data.push({
-                            x: time + i * 1000,
-                            y: 0
-                        });
-                    }
-                    return data;
-                }())
-        }]
-    });
-    new Highcharts.Chart({
-        chart: {
-            renderTo: 'memory_container',
-            //alignTicks: false,
-            type: 'spline',
-            animation: Highcharts.svg, // don't animate in old IE
-            marginRight: 10,
-            events: {
-                load: function () {
-
-                    // set up the updating of the chart each second
-                    var series = this.series[0];
-                    setInterval(function () {
-			 if(flag){
-			      $.get("<%= @getdataByDeviceId_url %>"+ '?device_id='+ selectDiviceId, function(data){
-                              var date = new Date();
-                              var second = date.getTime() - date.getTimezoneOffset()*60000 ; // current time
-                              var x = second;
-                              var y = parseInt(data["memory"]);
-                              $("p#memory").text("x: "+x + "   y: "+y);
-                              series.addPoint([x, y], true, true);
-			      });
-			  }
-                    }, 1000);
-                }
-            }
-        },
-        title: {
-                text: 'MEMORY(PSS)'
-            },
-            xAxis: {
-                type: 'datetime',
-                tickPixelInterval: 15
-            },
-            yAxis: {
-                title: {
-                    text: 'KB'
-                },
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#808080'
-                }]
-            },
-            tooltip: {
-                formatter: function () {
-                    return '<b>' + this.series.name + '</b><br/>' +
-                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
-                        Highcharts.numberFormat(this.y, 2);
-                }
-            },
-            legend: {
-                enabled: false
-            },
-            exporting: {
-                enabled: true
-            },
-            series: [{
-                name: 'memory',
-                data: (function () {
-                    // generate an array of random data
-                    var data = [],
-                        time = (new Date()).getTime() - (new Date()).getTimezoneOffset()*60000,
-                        i;
-
-                    for (i = -19; i <= 0; i += 1) {
-                        data.push({
-                            x: time + i * 1000,
-                            y: 0
-                        });
-                    }
-                    return data;
-                }())
-        }]
-    });
-    new Highcharts.Chart({
-        chart: {
-            renderTo: 'flow_container',
-            //alignTicks: false,
-            type: 'spline',
-            animation: Highcharts.svg, // don't animate in old IE
-            marginRight: 10,
-            events: {
-                load: function () {
-
-                    // set up the updating of the chart each second
-                    var series = this.series[0];
-                    setInterval(function () {
-			if(flag){    
-			    $.get("<%= @getdataByDeviceId_url %>"+'?device_id='+ selectDiviceId, function(data){
-                              var date = new Date();
-                              var second = date.getTime() - date.getTimezoneOffset()*60000 ;// current time
-                              var x = second;
-                              var y = parseInt(data["flow"]);
-                              $("p#flow").text("x: "+x + "   y: "+y);
-                              series.addPoint([x, y], true, true);
-			      });
-			}
-                    }, 1000);
-                }
-            }
-        },
-        title: {
-                text: 'NetWork Speed (download)'
-            },
-            xAxis: {
-                type: 'datetime',
-                tickPixelInterval: 15
-            },
-            yAxis: {
-                title: {
-                    text: 'KB/S'
-                },
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#808080'
-                }]
-            },
-            tooltip: {
-                formatter: function () {
-                    return '<b>' + this.series.name + '</b><br/>' +
-                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
-                        Highcharts.numberFormat(this.y, 2);
-                }
-            },
-            legend: {
-                enabled: false
-            },
-            exporting: {
-                enabled: true
-            },
-            series: [{
-                name: 'NetWork flow',
-                data: (function () {
-                    // generate an array of random data
-                    var data = [],
-                        time = (new Date()).getTime() - (new Date()).getTimezoneOffset()*60000,
-                        i;
-
-                    for (i = -19; i <= 0; i += 1) {
-                        data.push({
-                            x: time + i * 1000,
-                            y: 0
-                        });
-                    }
-                    return data;
-                }())
-        }]
-    });
+      createHighCharts("cpu", "cpu_container", "CPU", "Percentage", "cpu");
+      createHighCharts("memory", "memory_container", "Memory", "KB", "Memory");
+      createHighCharts("flow", "flow_container", "NetWork Speed", "Kb/s", "Kb/s");
 
     }
 
-    function showCpuHistory(filter_by_what){ 
+    function showHistory(filter_by_what){ 
         var tempdata = [];
         $.ajax({
             type: "GET",
@@ -258,10 +116,10 @@
             dataType: "JSON",
             success: function(data){
                 tempdata = data[filter_by_what];
-                $.artwl_bind({ showbtnid: "showCpuHistoryBtn", title: "History Data", content: $("#cpu_history_container") });
+                $.artwl_bind({ showbtnid: "showCpuHistoryBtn", title: "History Data", content: $("#history_container") });
                 new Highcharts.Chart({
                     chart: {
-                        renderTo: 'cpu_history_container',
+                        renderTo: 'history_container',
                         type: 'area'
                     },
                     title: {
@@ -313,7 +171,7 @@
 
                     }]
                 });
-                $("#cpu_history_container").show();
+                $("#history_container").show();
                 
             },
             complete: function(){}
@@ -360,9 +218,9 @@
 <h1>Mobile Monitor WebSite</h1>
 <p></p>
 <select id="phones" onchange="onSelectItemChanged()"></select>
-<button type="button" id="showCpuHistoryBtn" onclick="showCpuHistory('cpu')">Show history data of CPU </button>
-<button type="button" id="showMemoryHistoryBtn" onclick="showCpuHistory('memory')">Show history data of Memory </button>
-<button type="button" id="showFlowHistoryBtn" onclick="showCpuHistory('flow')">Show history data of NetWork Speed </button>
+<button type="button" id="showCpuHistoryBtn" onclick="showHistory('cpu')">Show history data of CPU </button>
+<button type="button" id="showMemoryHistoryBtn" onclick="showHistory('memory')">Show history data of Memory </button>
+<button type="button" id="showFlowHistoryBtn" onclick="showHistory('flow')">Show history data of NetWork Speed </button>
 <button type="button" id="refreshDevices" onclick="refreshDevicesList()">refresh devices list</button>
 <br>
 <br>
@@ -374,5 +232,5 @@
 <p id="memory"></P>
 <div id="flow_container" style="width: 1500px; height: 200px"></div>
 <p id="flow"></P>
-<div id="cpu_history_container" style="width: 1500px; height: 200px" display="none"></div
+<div id="history_container" style="width: 1500px; height: 200px" display="none"></div
 
